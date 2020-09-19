@@ -152,7 +152,7 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
   void registrationStateChanged(RegistrationState state) {}
 
   void _backToDialPad() {
-    _timer.cancel();
+    _timer.cancel(  );
     Timer(Duration(seconds: 2), () {
       Navigator.of(context).pop();
     });
@@ -489,36 +489,48 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
           top: voiceonly ? 48 : 6,
           left: 0,
           right: 0,
-          child: Center(
-              child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Center(
-                  child: Padding(
-                      padding: const EdgeInsets.all(6),
-                      child: Text(
-                        (voiceonly ? 'VOICE CALL' : 'VIDEO CALL') +
-                            (_hold
-                                ? ' PAUSED BY ${this._holdOriginator.toUpperCase()}'
-                                : ''),
-                        style: TextStyle(fontSize: 24, color: Colors.black54),
-                      ))),
-              Center(
-                  child: Padding(
-                      padding: const EdgeInsets.all(6),
-                      child: Text(
-                        '$remote_identity',
-                        style: TextStyle(fontSize: 18, color: Colors.black54),
-                      ))),
-              Center(
-                  child: Padding(
-                      padding: const EdgeInsets.all(6),
-                      child: Text(_timeLabel,
-                          style:
-                              TextStyle(fontSize: 14, color: Colors.black54))))
-            ],
-          )),
+          child: Container(
+            color: Colors.black87,
+            child: Center(
+                child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  color: Colors.black87,
+                  child: Center(
+                      child: Container(
+                        color: Colors.black87,
+                        child: Padding(
+                            padding: const EdgeInsets.all(6),
+                            child: Container(
+                              color: Colors.black87,
+                              child: Text(
+                                (voiceonly ? 'VOICE CALL' : 'VIDEO CALL') +
+                                    (_hold
+                                        ? ' PAUSED BY ${this._holdOriginator.toUpperCase()}'
+                                        : ''),
+                                style: TextStyle(fontSize: 24, color: Colors.white),
+                              ),
+                            )),
+                      )),
+                ),
+                Center(
+                    child: Padding(
+                        padding: const EdgeInsets.all(6),
+                        child: Text(
+                          '$remote_identity',
+                          style: TextStyle(fontSize: 18, color: Colors.white),
+                        ))),
+                Center(
+                    child: Padding(
+                        padding: const EdgeInsets.all(6),
+                        child: Text(_timeLabel,
+                            style:
+                                TextStyle(fontSize: 14, color: Colors.white))))
+              ],
+            )),
+          ),
         ),
     ]);
 
@@ -531,9 +543,11 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+            backgroundColor: Colors.teal,
             automaticallyImplyLeading: false,
-            title: Text('[$direction] ${EnumHelper.getName(_state)}')),
+            title: Center( child: Text('[$direction] ${EnumHelper.getName(_state)}'))),
         body: Container(
+          color: Colors.black87,
           child: _buildContent(),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

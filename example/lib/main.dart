@@ -10,7 +10,7 @@ import 'src/callscreen.dart';
 import 'src/about.dart';
 
 void main() {
-  if (WebRTC.platformIsDesktop) {
+    if (WebRTC.platformIsDesktop) {
     debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
   }
   runApp(MyApp());
@@ -50,9 +50,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Converge ICT Solutions: Click2Call',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.teal,
         fontFamily: 'Roboto',
       ),
       initialRoute: '/',

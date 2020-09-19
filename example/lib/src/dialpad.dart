@@ -1,6 +1,12 @@
+import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sip_ua/sip_ua.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:connectivity_widget/connectivity_widget.dart';
+import 'package:footer/footer.dart';
+import 'package:footer/footer_view.dart';
 
 import 'widgets/action_button.dart';
 
@@ -17,7 +23,10 @@ class _MyDialPadWidget extends State<DialPadWidget>
   SIPUAHelper get helper => widget._helper;
   TextEditingController _textController;
   SharedPreferences _preferences;
-
+  Map<String, String> _wsExtraHeaders = {
+    'Origin': ' https://tryit.jssip.net',
+    'Host': 'tryit.jssip.net:10443'
+  };
   String receivedMsg;
 
   @override
@@ -26,15 +35,35 @@ class _MyDialPadWidget extends State<DialPadWidget>
     receivedMsg = "";
     _bindEventListeners();
     _loadSettings();
+    _loadDefaultSIPConnection();
   }
+
+
 
   void _loadSettings() async {
     _preferences = await SharedPreferences.getInstance();
-    _dest = _preferences.getString('dest') ?? 'sip:hello_jssip@tryit.jssip.net';
+    _dest = _preferences.getString('dest') ?? '200';
     _textController = TextEditingController(text: _dest);
     _textController.text = _dest;
     
     this.setState(() {});
+  }
+
+  void _loadDefaultSIPConnection(){
+    UaSettings settings = UaSettings();
+
+    settings.webSocketUrl = "wss://api2.slash.ph:8089/ws";
+    settings.webSocketSettings.extraHeaders = _wsExtraHeaders;
+    settings.webSocketSettings.allowBadCertificate = true;
+    settings.webSocketSettings.userAgent = 'Dart/2.8 (dart:io) for OpenSIPS.';
+
+    settings.uri = "sip:199@api2.slash.ph";
+    settings.authorizationUser = "199";
+    settings.password = "199@pass1";
+    settings.displayName = "199";
+    settings.userAgent = 'Dart SIP Client v1.0.0';
+
+    helper.start(settings);
   }
 
   void _bindEventListeners() {
@@ -113,7 +142,8 @@ class _MyDialPadWidget extends State<DialPadWidget>
         .map((row) => Padding(
             padding: const EdgeInsets.all(12),
             child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: row
                     .map((label) => ActionButton(
                           title: '${label.keys.first}',
@@ -136,21 +166,24 @@ class _MyDialPadWidget extends State<DialPadWidget>
                 Container(
                     width: 360,
                     child: TextField(
-                      keyboardType: TextInputType.text,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[
+                        FilteringTextInputFormatter.digitsOnly
+                      ],
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 24, color: Colors.black54),
+                      style: TextStyle(fontSize: 24, color: Colors.white),
                       decoration: InputDecoration(
                         border: InputBorder.none,
                       ),
                       controller: _textController,
                     )),
               ])),
-      Container(
+      /*Container(
           width: 300,
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
-              children: _buildNumPad())),
+              children: _buildNumPad())),*/
       Container(
           width: 300,
           child: Padding(
@@ -159,20 +192,20 @@ class _MyDialPadWidget extends State<DialPadWidget>
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  ActionButton(
+                  /*ActionButton(
                     icon: Icons.videocam,
                     onPressed: () => _handleCall(context),
-                  ),
+                  ),*/
                   ActionButton(
                     icon: Icons.dialer_sip,
                     fillColor: Colors.green,
                     onPressed: () => _handleCall(context, true),
                   ),
-                  ActionButton(
+                 /* ActionButton(
                     icon: Icons.keyboard_arrow_left,
                     onPressed: () => _handleBackSpace(),
                     onLongPress: () => _handleBackSpace(true),
-                  ),
+                  ),*/
                 ],
               )))
     ];
@@ -182,8 +215,14 @@ class _MyDialPadWidget extends State<DialPadWidget>
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Dart SIP UA Demo"),
-          actions: <Widget>[
+          backgroundColor: Colors.teal,
+          title: Center( child: Text("CLICK2CALL" ,
+            style: TextStyle(
+                fontFamily: 'Azonix.otf',
+                fontWeight: FontWeight.w700
+            ))),
+
+          /*actions: <Widget>[
             PopupMenuButton<String>(
                 onSelected: (String value) {
                   switch (value) {
@@ -235,37 +274,58 @@ class _MyDialPadWidget extends State<DialPadWidget>
                         value: 'about',
                       )
                     ]),
-          ],
+          ],*/
         ),
         body: Align(
             alignment: Alignment(0, 0),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: Center(
-                        child: Text(
-                      'Status: ${EnumHelper.getName(helper.registerState.state)}',
-                      style: TextStyle(fontSize: 14, color: Colors.black54),
+            child: Container(
+              color: Colors.black87,
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.fromLTRB(0, MediaQuery.of(context).size.height * 0.1
+                          , 0, 0),
+                      //padding: const EdgeInsets.all(6.0),
+                      child: Center(
+                          child: Text(
+                        'Status: ${EnumHelper.getName(helper.registerState.state)}',
+                        style: TextStyle(fontSize: 14, color: Colors.white70),
+                      )),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: Center(
+                          child: Text('${receivedMsg}',
+                        style: TextStyle(fontSize: 14, color: Colors.white70),
+                      )),
+                    ),
+                    Container(
+                        child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: _buildDialPad(),
                     )),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: Center(
-                        child: Text(
-                      'Received Message: ${receivedMsg}',
-                      style: TextStyle(fontSize: 14, color: Colors.black54),
-                    )),
-                  ),
-                  Container(
-                      child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: _buildDialPad(),
-                  )),
-                ])));
+                    Container(
+                        margin: EdgeInsets.fromLTRB(0, MediaQuery.of(context).size.height * 0.1
+                            , 0, 0),
+                        child:  Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                                Text('Powered by:',
+                                style: TextStyle(fontSize: 14, color: Colors.white70)),
+                               Image(
+                                 width: MediaQuery.of(context).size.width * 0.8,
+                                 height: MediaQuery.of(context).size.height * 0.1,
+                                   image: AssetImage('assets/icons/Converge_ICT_Logo.png'))
+
+                          ],
+                        )
+                    ),
+                  ]),
+            )));
   }
 
   @override

@@ -52,16 +52,16 @@ class _MyDialPadWidget extends State<DialPadWidget>
   void _loadDefaultSIPConnection(){
     UaSettings settings = UaSettings();
 
-    settings.webSocketUrl = "wss://api2.slash.ph:8089/ws";
+    settings.webSocketUrl = "wss://click2talk.convergeict.com:8089/ws";
     settings.webSocketSettings.extraHeaders = _wsExtraHeaders;
-    settings.webSocketSettings.allowBadCertificate = true;
+    settings.webSocketSettings.allowBadCertificate = false;
     settings.webSocketSettings.userAgent = 'Dart/2.8 (dart:io) for OpenSIPS.';
 
-    settings.uri = "sip:199@api2.slash.ph";
-    settings.authorizationUser = "199";
-    settings.password = "199@pass1";
-    settings.displayName = "199";
-    settings.userAgent = 'Dart SIP Client v1.0.0';
+    settings.uri = "sip:200@click2talk.convergeict.com";
+    settings.authorizationUser = "200";
+    settings.password = "200@pass1";
+    settings.displayName = "200";
+    settings.userAgent = 'Dart SIP Client v1.0.2';
 
     helper.start(settings);
   }
@@ -70,7 +70,7 @@ class _MyDialPadWidget extends State<DialPadWidget>
     helper.addSipUaHelperListener(this);
   }
 
-  Widget _handleCall(BuildContext context, [bool voiceonly = false]) {
+  Widget _handleCall(BuildContext context, [bool voiceonly = true]) {
     var dest = _textController.text;
     if (dest == null || dest.isEmpty) {
       showDialog<Null>(

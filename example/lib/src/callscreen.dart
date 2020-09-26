@@ -4,6 +4,8 @@ import 'package:flutter_webrtc/flutter_webrtc.dart';
 
 import 'widgets/action_button.dart';
 import 'package:sip_ua/sip_ua.dart';
+import 'package:flutter_audio_manager/flutter_audio_manager.dart';
+//import 'package:flutter_incall_manager/flutter_incall_manager.dart';
 
 class CallScreenWidget extends StatefulWidget {
   final SIPUAHelper _helper;
@@ -15,6 +17,9 @@ class CallScreenWidget extends StatefulWidget {
 
 class _MyCallScreenWidget extends State<CallScreenWidget>
     implements SipUaHelperListener {
+  //IncallManager incallManager = new IncallManager();
+  AudioInput _currentInput = AudioInput("unknow", 0);
+  List<AudioInput> _availableInputs = [];
   RTCVideoRenderer _localRenderer = RTCVideoRenderer();
   RTCVideoRenderer _remoteRenderer = RTCVideoRenderer();
   double _localVideoHeight;
@@ -34,6 +39,7 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
   CallStateEnum _state = CallStateEnum.NONE;
   SIPUAHelper get helper => widget._helper;
 
+
   bool get voiceonly =>
       (_localStream == null || _localStream.getVideoTracks().isEmpty) &&
       (_remoteStream == null || _remoteStream.getVideoTracks().isEmpty);
@@ -50,6 +56,7 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
     _initRenderers();
     helper.addSipUaHelperListener(this);
     _startTimer();
+    initializeSounds();
   }
 
   @override
@@ -282,7 +289,9 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
   void _toggleSpeaker() {
     if (_localStream != null) {
       _speakerOn = !_speakerOn;
-      _localStream.getAudioTracks()[0].enableSpeakerphone(_speakerOn);
+        _localStream.getAudioTracks()[0].enableSpeakerphone(_speakerOn);
+        _changeAudioInpput();
+        //incallManager.setForceSpeakerphoneOn(_speakerOn);
     }
   }
 
@@ -383,21 +392,21 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
             ));
           }
 
-          if (voiceonly) {
+          //if (voiceonly) {
             advanceActions.add(ActionButton(
               title: _speakerOn ? 'speaker off' : 'speaker on',
               icon: _speakerOn ? Icons.volume_off : Icons.volume_up,
               checked: _speakerOn,
               onPressed: () => _toggleSpeaker(),
             ));
-          } else {
-            advanceActions.add(ActionButton(
-              title: _videoMuted ? "camera on" : 'camera off',
-              icon: _videoMuted ? Icons.videocam : Icons.videocam_off,
-              checked: _videoMuted,
-              onPressed: () => _muteVideo(),
-            ));
-          }
+          //} else {
+           // advanceActions.add(ActionButton(
+           //   title: _videoMuted ? "camera on" : 'camera off',
+           //   icon: _videoMuted ? Icons.videocam : Icons.videocam_off,
+           //   checked: _videoMuted,
+           //   onPressed: () => _muteVideo(),
+           // ));
+         // }
 
           basicActions.add(ActionButton(
             title: _hold ? 'unhold' : 'hold',
@@ -464,25 +473,25 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
   Widget _buildContent() {
     var stackWidgets = <Widget>[];
 
-    if (!voiceonly && _remoteStream != null) {
-      stackWidgets.add(Center(
-        child: RTCVideoView(_remoteRenderer),
-      ));
-    }
+    //if (!voiceonly && _remoteStream != null) {
+    //  stackWidgets.add(Center(
+    //    child: RTCVideoView(_remoteRenderer),
+    //  ));
+   // }
 
-    if (!voiceonly && _localStream != null) {
-      stackWidgets.add(Container(
-        child: AnimatedContainer(
-          child: RTCVideoView(_localRenderer),
-          height: _localVideoHeight,
-          width: _localVideoWidth,
-          alignment: Alignment.topRight,
-          duration: Duration(milliseconds: 300),
-          margin: _localVideoMargin,
-        ),
-        alignment: Alignment.topRight,
-      ));
-    }
+    //if (!voiceonly && _localStream != null) {
+     // stackWidgets.add(Container(
+     //   child: AnimatedContainer(
+      //    child: RTCVideoView(_localRenderer),
+      //    height: _localVideoHeight,
+      //    width: _localVideoWidth,
+      //    alignment: Alignment.topRight,
+      //    duration: Duration(milliseconds: 300),
+      //    margin: _localVideoMargin,
+     //   ),
+     //   alignment: Alignment.topRight,
+     // ));
+   // }
 
     stackWidgets.addAll([
         Positioned(
@@ -560,4 +569,42 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
   void onNewMessage(SIPMessageRequest msg) {
     // NO OP
   }
+
+  Future<void> initializeSounds() async {
+    FlutterAudioManager.setListener(() async {
+      print("-----audio changed-------");
+      await _getAudioInput();
+      setState(() {});
+    });
+
+    await _getAudioInput();
+    if (!mounted) return;
+    setState(() {});
+  }
+
+  void _getAudioInput() async {
+    _currentInput = await FlutterAudioManager.getCurrentOutput();
+    print("current:$_currentInput");
+    _availableInputs = await FlutterAudioManager.getAvailableInputs();
+    print("available $_availableInputs");
+  }
+
+  void _changeAudioInpput() async {
+
+    bool res = false;
+    if (_currentInput.port == AudioPort.receiver) {
+      res = await FlutterAudioManager.changeToSpeaker();
+      print("change to speaker:$res");
+    }
+    else {
+      res = await FlutterAudioManager.changeToReceiver();
+      print("change to receiver:$res");
+    }
+
+    await _getAudioInput();
+  }
+
+
+
+
 }

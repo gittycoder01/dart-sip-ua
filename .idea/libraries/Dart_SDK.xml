@@ -1,0 +1,29 @@
+<component name="libraryTable">
+  <library name="Dart SDK">
+    <CLASSES>
+      <root url="file://C:/dart-sdk.old354/lib/async" />
+      <root url="file://C:/dart-sdk.old354/lib/cli" />
+      <root url="file://C:/dart-sdk.old354/lib/collection" />
+      <root url="file://C:/dart-sdk.old354/lib/convert" />
+      <root url="file://C:/dart-sdk.old354/lib/core" />
+      <root url="file://C:/dart-sdk.old354/lib/developer" />
+      <root url="file://C:/dart-sdk.old354/lib/ffi" />
+      <root url="file://C:/dart-sdk.old354/lib/html" />
+      <root url="file://C:/dart-sdk.old354/lib/indexed_db" />
+      <root url="file://C:/dart-sdk.old354/lib/io" />
+      <root url="file://C:/dart-sdk.old354/lib/isolate" />
+      <root url="file://C:/dart-sdk.old354/lib/js" />
+      <root url="file://C:/dart-sdk.old354/lib/js_util" />
+      <root url="file://C:/dart-sdk.old354/lib/math" />
+      <root url="file://C:/dart-sdk.old354/lib/mirrors" />
+      <root url="file://C:/dart-sdk.old354/lib/svg" />
+      <root url="file://C:/dart-sdk.old354/lib/typed_data" />
+      <root url="file://C:/dart-sdk.old354/lib/wasm" />
+      <root url="file://C:/dart-sdk.old354/lib/web_audio" />
+      <root url="file://C:/dart-sdk.old354/lib/web_gl" />
+      <root url="file://C:/dart-sdk.old354/lib/web_sql" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

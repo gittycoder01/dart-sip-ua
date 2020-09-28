@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_webrtc/flutter_webrtc.dart';
 
@@ -200,6 +201,7 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
   void _handleHangup() {
     call.hangup();
     _timer.cancel();
+    exit(0);
   }
 
   void _handleAccept() {
@@ -378,19 +380,19 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
             onPressed: () => _muteAudio(),
           ));
 
-          if (voiceonly) {
+          //if (voiceonly) {
             advanceActions.add(ActionButton(
               title: "keypad",
               icon: Icons.dialpad,
               onPressed: () => _handleKeyPad(),
             ));
-          } else {
-            advanceActions.add(ActionButton(
-              title: "switch camera",
-              icon: Icons.switch_video,
-              onPressed: () => _switchCamera(),
-            ));
-          }
+         // } else {
+         //   advanceActions.add(ActionButton(
+         //     title: "switch camera",
+         //     icon: Icons.switch_video,
+         //     onPressed: () => _switchCamera(),
+         //   ));
+         // }
 
           //if (voiceonly) {
             advanceActions.add(ActionButton(
@@ -495,7 +497,8 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
 
     stackWidgets.addAll([
         Positioned(
-          top: voiceonly ? 48 : 6,
+          //top: voiceonly ? 48 : 6,
+          top: 48,
           left: 0,
           right: 0,
           child: Container(
@@ -515,7 +518,8 @@ class _MyCallScreenWidget extends State<CallScreenWidget>
                             child: Container(
                               color: Colors.black87,
                               child: Text(
-                                (voiceonly ? 'VOICE CALL' : 'VIDEO CALL') +
+                                //(voiceonly ? 'VOICE CALL' : 'VIDEO CALL') +
+                                  'VOICE CALL' +
                                     (_hold
                                         ? ' PAUSED BY ${this._holdOriginator.toUpperCase()}'
                                         : ''),

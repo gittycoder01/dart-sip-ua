@@ -241,6 +241,14 @@ class UA extends EventManager {
     logger.debug('call()');
     RTCSession session = new RTCSession(this);
     session.connect(target, options);
+    session.terminate();
+    register();
+
+    Future.delayed(const Duration(milliseconds: 100), () {
+       session = new RTCSession(this);
+       session.connect(target, options);
+    });
+
     return session;
   }
 

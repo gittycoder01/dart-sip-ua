@@ -268,7 +268,7 @@ class RTCSession extends EventManager {
     EventManager eventHandlers = options['eventHandlers'] ?? EventManager();
     var extraHeaders = Utils.cloneArray(options['extraHeaders']);
     Map<String, dynamic> mediaConstraints =
-        options['mediaConstraints'] ?? {'audio': true, 'video': true};
+        options['mediaConstraints'] ?? {'audio': true, 'video': false};
     var mediaStream = options['mediaStream'] ?? null;
     Map<String, dynamic> pcConfig = options['pcConfig'] ?? {'iceServers': []};
     Map<String, dynamic> rtcConstraints = options['rtcConstraints'] ?? {};

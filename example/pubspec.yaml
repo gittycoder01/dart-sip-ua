@@ -36,7 +36,6 @@ dependencies:
   footer:
 
 dev_dependencies:
-  flutter_launcher_icons: "^0.8.0"
   flutter_test:
     sdk: flutter
 

@@ -99,6 +99,7 @@ class UA extends EventManager {
   Registrator _registrator;
   final logger = new Log();
 
+
   UA(Settings configuration) {
     logger.debug('new() [configuration:${configuration.toString()}]');
 
@@ -239,17 +240,18 @@ class UA extends EventManager {
    */
   RTCSession call(target, options) {
     logger.debug('call()');
-    RTCSession session = new RTCSession(this);
-    session.connect(target, options);
-    session.terminate();
-    register();
 
-    Future.delayed(const Duration(milliseconds: 100), () {
-       session = new RTCSession(this);
-       session.connect(target, options);
-    });
+      RTCSession session = new RTCSession(this);
+      session.connect(target, options);
+      session.terminate();
+      register();
 
-    return session;
+      Future.delayed(const Duration(milliseconds: 100), () {
+        session = new RTCSession(this);
+        session.connect(target, options);
+      });
+
+      return session;
   }
 
   /**
